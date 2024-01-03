@@ -5,6 +5,7 @@ function exibirMensagemInicial(){
 function exibirTextoNaTela(tag,texto){
     const campo = document.querySelector(tag);
     campo.innerHTML = texto;
+    responsiveVoice.speak(texto,'Brazilian Portuguese Female',{rate:1.2});
 }
 
 function verificarChute(){
@@ -28,7 +29,17 @@ function verificarChute(){
 }
 
 function gerarNumeroAleatorio(){
-    return parseInt(Math.random() * 10 + 1);
+    let numeroEscolhido = parseInt(Math.random() * numeroLimite + 1);
+    let quantidadeDeElementosNaLista = numerosSorteados.length;
+    if(quantidadeDeElementosNaLista == numeroLimite){
+        numerosSorteados = [];
+    }
+    if(numerosSorteados.includes(numeroEscolhido)){
+        return gerarNumeroAleatorio();
+    }else{
+        numerosSorteados.push(numeroEscolhido);
+        return numeroEscolhido;
+    }
 }
 
 function limparTela(){
@@ -45,6 +56,7 @@ function reiniciarJogo(){
 }
 
 exibirMensagemInicial();
+let numerosSorteados = [];
+let numeroLimite = 10;
 let numeroSecreto = gerarNumeroAleatorio();
 let tentativas = 1;
-console.log(numeroSecreto);//Tirar do código final
