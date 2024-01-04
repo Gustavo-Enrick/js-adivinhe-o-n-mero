@@ -1,11 +1,11 @@
 function exibirMensagemInicial(){
     exibirTextoNaTela('h1','Jogo Advinha');
-    exibirTextoNaTela('p','Digite um número de 1 à 10');
+    exibirTextoNaTela('p',`Digite um número de 1 à ${numeroLimite}`);
 }
 function exibirTextoNaTela(tag,texto){
     const campo = document.querySelector(tag);
     campo.innerHTML = texto;
-    responsiveVoice.speak(texto,'Brazilian Portuguese Female',{rate:1.2});
+    falarTexto(texto);
 }
 
 function verificarChute(){
@@ -15,7 +15,8 @@ function verificarChute(){
         let mensagem = `Parabéns,você descobriu o número secreto com ${tentativas} ${palavraTentativa}!`;
         exibirTextoNaTela('h1','Acertou');
         exibirTextoNaTela('p',mensagem);
-        document.getElementById('reiniciar').removeAttribute('disabled');
+        habilitarBotao('reiniciar','sim');
+        habilitarBotao('chute','não');
     }else{
         exibirTextoNaTela('h1','Você errou :(');
         if(chute > numeroSecreto){
@@ -23,14 +24,14 @@ function verificarChute(){
         }else{
             exibirTextoNaTela('p','O número secreto é maior!');
         }
-        limparTela();
+        limpaCampo();
         tentativas++;
     }
 }
 
 function gerarNumeroAleatorio(){
-    let numeroEscolhido = parseInt(Math.random() * numeroLimite + 1);
-    let quantidadeDeElementosNaLista = numerosSorteados.length;
+    const numeroEscolhido = parseInt(Math.random() * numeroLimite + 1);
+    const quantidadeDeElementosNaLista = numerosSorteados.length;
     if(quantidadeDeElementosNaLista == numeroLimite){
         numerosSorteados = [];
     }
@@ -42,21 +43,28 @@ function gerarNumeroAleatorio(){
     }
 }
 
-function limparTela(){
-    chute = document.querySelector('input');
-    chute.value = '';
+function limpaCampo(){
+    document.querySelector('input').value = '';
 }
 
 function reiniciarJogo(){
     tentativas = 1;
     numeroSecreto = gerarNumeroAleatorio();
-    limparTela();
+    limpaCampo();
     exibirMensagemInicial();
-    document.getElementById('reiniciar').setAttribute('disabled','true');
+    habilitarBotao('reiniciar','não');
+    habilitarBotao('chute','sim');
+}
+function habilitarBotao(nomeDoBotao, habilitar) {
+    document.getElementById(nomeDoBotao).disabled = (habilitar === 'sim') ? false : true;
 }
 
-exibirMensagemInicial();
+function falarTexto(textoFala){
+    responsiveVoice.speak(textoFala,'Brazilian Portuguese Female',{rate:1.2});
+}
+
 let numerosSorteados = [];
-let numeroLimite = 10;
+const numeroLimite = 10;
 let numeroSecreto = gerarNumeroAleatorio();
 let tentativas = 1;
+exibirMensagemInicial();
